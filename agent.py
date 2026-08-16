@@ -63,23 +63,9 @@ class agent:
 
         summed_rewards = np.concat(summed_chunks)
 
-#code below here are test codes for Agent class. will be deleted after some verifications.
+        y = np.zeros([len(summed_rewards), self.model.output_size], dtype=np.float32)
+        for i, action in enumerate(actions):
+            y[i][action] = summed_rewards[i]
 
-world = gridworld()
-Agent = agent()
-
-for a in range(2):
-    terminated = False
-    player_location, target_location = world.reset()
-    Agent.reset_memory()
-    while not terminated:
-        action = Agent.policy(np.concat([player_location, target_location]))
-        new_player_location, new_target_location, reward, terminated = world.step(action)
-        Agent.memory.append([player_location, target_location, Agent.memory_vector, action, reward, terminated])
-        Agent.update_memory()
-
-        player_location = new_player_location
-        target_location = new_target_location
-
-Agent.train()
-print(len(Agent.memory))
+        loss = self.model.backward(x, y)
+        return loss
