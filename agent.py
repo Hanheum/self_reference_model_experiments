@@ -1,8 +1,7 @@
 import numpy as np
 from memory_model import memory_model
-from environment import gridworld
 from collections import deque
-from ml_utils import to_single_vector
+from ml_utils import to_single_vector, distance
 from random import random, randint
 
 class agent:
@@ -14,17 +13,33 @@ class agent:
         self.memory = deque(maxlen=100000)
         #each memory will have player_location, target_location, memory, action, reward, terminated
         self.epsilon = 1.
-        self.epsilon_decay = 0.99999
+        self.epsilon_decay = 0.99997
 
         self.discount_rate = 0.5
 
     def policy(self, observation):
         self.epsilon *= self.epsilon_decay
         self.epsilon = max([0.1, self.epsilon])
-        action = np.argmax(self.model.forward(np.concat([observation, self.memory_vector])))
+        action = np.argmax(self.model.forward(np.concat([observation/(self.world_size-1), self.memory_vector/10])))
 
-        if self.epsilon > random():            
-            return randint(0, self.model.output_size-1)
+        if self.epsilon > random():
+            if randint(0, 1) == 0:
+                return randint(0, self.model.output_size-1)
+            else:
+                direction_y = observation[2] - observation[0]
+                direction_x = observation[3] - observation[1]
+                if abs(direction_x) > abs(direction_y):
+                    direction_x = direction_x / abs(direction_x)
+                    if direction_x < 0:
+                        return 3
+                    else:
+                        return 2
+                else:
+                    direction_y = direction_y / abs(direction_y)
+                    if direction_y < 0:
+                        return 0
+                    else:
+                        return 1
         else:
             return action
 
@@ -38,7 +53,7 @@ class agent:
         x, rewards, actions, terminateds = [], [], [], []
         for memory_sample in self.memory:
             player_location, target_location, memory, action, reward, terminated = memory_sample
-            x.append(np.concat([player_location/(self.world_size-1), target_location/(self.world_size-1), memory]))
+            x.append(np.concat([player_location/(self.world_size-1), target_location/(self.world_size-1), memory/10]))
             actions.append(action)
             rewards.append(reward)
             terminateds.append(terminated)

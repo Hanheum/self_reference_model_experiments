@@ -99,3 +99,29 @@ class memory_model:
         self.W4 -= self.learning_rate * np.sum(dLdW4, axis=0)
 
         return MSE(y_pred, y)
+
+    def save(self, saving_dir):
+        np.save(saving_dir+'/W0', self.W0)
+        np.save(saving_dir+'/b0', self.b0)
+        np.save(saving_dir+'/W1', self.W1)
+        np.save(saving_dir+'/b1', self.b1)
+        np.save(saving_dir+'/W2', self.W2)
+        np.save(saving_dir+'/b2', self.b2)
+        np.save(saving_dir+'/W3', self.W3)
+        np.save(saving_dir+'/b3', self.b3)
+        np.save(saving_dir+'/W4', self.W4)
+        np.save(saving_dir+'/b4', self.b4)
+        print('data saved')
+
+    def load(self, loading_dir):
+        self.W0 = np.load(loading_dir+'/W0.npy')
+        self.b0 = np.load(loading_dir+'/b0.npy')
+        self.W1 = np.load(loading_dir+'/W1.npy')
+        self.b1 = np.load(loading_dir+'/b1.npy')
+        self.W2 = np.load(loading_dir+'/W2.npy')
+        self.b2 = np.load(loading_dir+'/b2.npy')
+        self.W3 = np.load(loading_dir+'/W3.npy')
+        self.b3 = np.load(loading_dir+'/b3.npy')
+        self.W4 = np.load(loading_dir+'/W4.npy')
+        self.b4 = np.load(loading_dir+'/b4.npy')
+        print('data loaded')

@@ -41,3 +41,6 @@ for epoch in range(epochs):
     new_learning_rate = float(open('./learning_rate.txt', 'r').read())
     if Agent.model.learning_rate != new_learning_rate:
         Agent.model.learning_rate = new_learning_rate
+
+    if (epoch+1)%100 == 0:
+        Agent.model.save('./model_weight')

@@ -16,7 +16,7 @@ class gridworld:
         self.distance = None
         self.terminated = False
 
-        self.count = 0
+        self.count = 1
         self.reached_target = False
 
     def reset(self):
@@ -29,29 +29,34 @@ class gridworld:
 
         self.terminated = False
         self.distance = distance(self.player, self.target)
-        self.count = 0
+        self.count = 1
         self.reached_target = False
 
         return self.player, self.target
 
     def step(self, action):
         #0~3, 0:up 1:down 2:right 3:left
+        before_moving = self.player.copy()
         self.player += self.moving_dictionary[action]
         self.player[0] = min([self.size-1, max([0, self.player[0]])])
         self.player[1] = min([self.size-1, max([0, self.player[1]])])
+        if distance(before_moving, self.player) == 0:
+            self.player -= self.moving_dictionary[action]
+            self.player[0] = min([self.size-1, max([0, self.player[0]])])
+            self.player[1] = min([self.size-1, max([0, self.player[1]])])
 
         if np.sum((self.player - self.target)**2) == 0:
             self.terminated = True
-            reward = 1
+            reward = 1/(self.count/200 + 1)
             self.reached_target = True
         else:
             new_distance = distance(self.player, self.target)
             if new_distance >= self.distance:
                 self.distance = new_distance
-                reward = -0.1
+                reward = -0.1-(self.count/100)
             else:
                 self.distance = new_distance
-                reward = 0.1
+                reward = 0.1/self.count
 
         self.count += 1
 
