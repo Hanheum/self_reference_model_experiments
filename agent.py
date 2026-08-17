@@ -52,7 +52,7 @@ class agent:
             if terminated:
                 endpoint = i
                 reward_chunk = np.array(rewards[startpoint:endpoint+1])
-                summed_chunk = np.zeros_like(reward_chunk)
+                summed_chunk = np.zeros_like(reward_chunk).astype(np.float32)
                 for j in range(len(reward_chunk)):
                     k = len(reward_chunk) - j
                     summed_chunk[0:k] *= self.discount_rate
