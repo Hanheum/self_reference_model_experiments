@@ -20,7 +20,7 @@ class memory_model:
         self.b4 = generate_random_matrix((self.output_size, 1))
 
         self.x0, self.g0, self.x1, self.g1, self.x2, self.g2, self.x3, self.g3, self.x4, self.g4 = None, None, None, None, None, None, None, None, None, None
-        self.learning_rate = 1e-5
+        self.learning_rate = 1e-3
 
     def forward(self, x):
         #x be like: [sample]

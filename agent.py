@@ -14,7 +14,7 @@ class agent:
         self.memory = deque(maxlen=100000)
         #each memory will have player_location, target_location, memory, action, reward, terminated
         self.epsilon = 1.
-        self.epsilon_decay = 0.999
+        self.epsilon_decay = 0.99999
 
         self.discount_rate = 0.5
 

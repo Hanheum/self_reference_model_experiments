@@ -17,6 +17,7 @@ class gridworld:
         self.terminated = False
 
         self.count = 0
+        self.reached_target = False
 
     def reset(self):
         self.player = np.random.randint(0, self.size, size=[2, ])
@@ -28,6 +29,8 @@ class gridworld:
 
         self.terminated = False
         self.distance = distance(self.player, self.target)
+        self.count = 0
+        self.reached_target = False
 
         return self.player, self.target
 
@@ -40,6 +43,7 @@ class gridworld:
         if np.sum((self.player - self.target)**2) == 0:
             self.terminated = True
             reward = 1
+            self.reached_target = True
         else:
             new_distance = distance(self.player, self.target)
             if new_distance >= self.distance:
@@ -53,7 +57,6 @@ class gridworld:
 
         if self.count >= 200:
             self.terminated = True
-            self.count = 0
 
         return self.player, self.target, reward, self.terminated
 

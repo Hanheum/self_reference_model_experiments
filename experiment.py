@@ -32,7 +32,12 @@ for epoch in range(epochs):
 
     if len(Agent.memory) >= train_start:
         loss = Agent.train()
-        print(f"epoch: {epoch+1} | total reward: {total_reward} | memory length: {len(Agent.memory)} | epsilon: {Agent.epsilon} | loss: {loss}")
+        print(f"epoch: {epoch+1} | total reward: {total_reward} | memory length: {len(Agent.memory)} | epsilon: {Agent.epsilon} | loss: {loss} | reached target: {world.reached_target}")
 
     else:
-        print(f"epoch: {epoch+1} | total reward: {total_reward} | memory length: {len(Agent.memory)} | epsilon: {Agent.epsilon}")
+        print(f"epoch: {epoch+1} | total reward: {total_reward} | memory length: {len(Agent.memory)} | epsilon: {Agent.epsilon} | reached target: {world.reached_target}")
+
+    
+    new_learning_rate = float(open('./learning_rate.txt', 'r').read())
+    if Agent.model.learning_rate != new_learning_rate:
+        Agent.model.learning_rate = new_learning_rate
