@@ -11,11 +11,9 @@ class agent:
 
         self.memory_vector = np.zeros([self.model.memory_size, ]).astype(np.float32)
         self.memory = deque(maxlen=1000)
-        #each memory will have player_location, target_location, memory, action, reward, next_q_value, terminated
+        #each memory will have player_location, target_location, next_player_location, next_target_location, memory, next_memory, action, reward, terminated
         self.epsilon = 1.
         self.epsilon_decay = 0.999
-
-        self.discount_rate = 0.8
 
         self.q_value = 0
 
@@ -27,7 +25,7 @@ class agent:
         self.q_value = np.amax(prediction)
 
         if self.epsilon > random():
-            if randint(0, 1) == 0:
+            if 1 == 0:
                 return randint(0, self.model.output_size-1)
             else:
                 direction_y = observation[2] - observation[0]
@@ -54,17 +52,20 @@ class agent:
         self.memory_vector *= 0
 
     def train(self):
-        x, y, actions, terminateds = [], [], [], []
+        x, y, actions, rewards, terminateds = [], [], [], [], []
         for memory_sample in self.memory:
-            player_location, target_location, memory, action, reward, next_q_value, terminated = memory_sample
+            player_location, target_location, next_player_location, next_target_location, memory, next_memory, action, reward, terminated = memory_sample
 
             x.append(np.concat([player_location/(self.world_size-1), target_location/(self.world_size-1), memory/10]))
-            y.append(reward + self.discount_rate * next_q_value)
+            y.append(np.concat([next_player_location/(self.world_size-1), next_target_location/(self.world_size-1), next_memory/10]))
             actions.append(action)
+            rewards.append(reward)
             terminateds.append(terminated)
 
         x = np.asarray(x).astype(np.float32)
         y = np.asarray(y).astype(np.float32)
 
-        loss = self.model.backward(x, y, actions)
+        rewards = np.asarray(rewards).astype(np.float32)
+
+        loss = self.model.backward(x, y, rewards, actions)
         return loss

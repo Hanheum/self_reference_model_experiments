@@ -23,7 +23,7 @@ for i in range(10):
         total_reward += reward
 
         world.show()
-        sleep(0.1)
+        #sleep(0.1)
 
     if world.reached_target:
         count_reached_targets += 1

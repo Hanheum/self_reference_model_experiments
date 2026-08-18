@@ -22,6 +22,8 @@ class memory_model:
         self.x0, self.g0, self.x1, self.g1, self.x2, self.g2, self.x3, self.g3, self.x4, self.g4 = None, None, None, None, None, None, None, None, None, None
         self.learning_rate = 1e-3
 
+        self.discount_rate = 0.8
+
     def forward(self, x):
         #x be like: [sample]
         self.x0 = to_column(x)
@@ -61,9 +63,13 @@ class memory_model:
         self.g4 = self.g4.T
         return self.g4
 
-    def backward(self, x, y, actions):
+    def backward(self, x, y, rewards, actions):
         #x, y be like: [[sample1], [sample2], ...]
         N = len(x)
+
+        y = np.amax(self.forward_train(y), axis=1)
+        y = rewards + self.discount_rate * y
+
         actions_one_hot = one_hot(actions, self.output_size)
         y_pred = np.sum(self.forward_train(x) * actions_one_hot, axis=1)
         dLdx5 = MSE_derivation(y_pred, y)
