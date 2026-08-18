@@ -64,10 +64,11 @@ class memory_model:
     def backward(self, x, y, actions):
         #x, y be like: [[sample1], [sample2], ...]
         N = len(x)
-        y_pred = np.amax(self.forward_train(x), axis=1)
+        actions_one_hot = one_hot(actions, self.output_size)
+        y_pred = np.sum(self.forward_train(x) * actions_one_hot, axis=1)
         dLdx5 = MSE_derivation(y_pred, y)
 
-        dLdx5 = to_column(y_pred) * one_hot(actions, self.output_size)
+        dLdx5 = to_column(dLdx5) * actions_one_hot
 
         dLdb4 = to_column(dLdx5)
         dLdW4 = np.matmul(dLdb4, np.reshape(self.x4, [N, 1, self.x4.shape[1]]))

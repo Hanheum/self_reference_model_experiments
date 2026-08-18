@@ -18,19 +18,34 @@ for epoch in range(epochs):
 
     total_reward = 0
 
-    previous_q_value = 0
+    previous_player_location, previous_target_location = None, None
+    previous_r = 0
+    previous_action = None
+    previous_terminated = False
+    previous_memory_vector = None
+    count = 0
     while not terminated:
         action = Agent.policy(np.concat([player_location, target_location]))
         new_player_location, new_target_location, reward, terminated = world.step(action)
 
         total_reward += reward
 
-        Agent.memory.append([player_location, target_location, Agent.memory_vector, action, reward, previous_q_value, terminated])
-        previous_q_value = Agent.q_value
+        if count != 0:
+            Agent.memory.append([previous_player_location, previous_target_location, previous_memory_vector, previous_action, previous_r, Agent.q_value, previous_terminated])
+        else:
+            count += 1
+
+        previous_player_location, previous_target_location = player_location.copy(), target_location.copy()
+        previous_r = reward
+        previous_action = action
+        previous_terminated = terminated
+        previous_memory_vector = Agent.memory_vector
 
         Agent.update_memory()
         player_location = new_player_location
         target_location = new_target_location
+
+    Agent.memory.append([previous_player_location, previous_target_location, previous_memory_vector, previous_action, previous_r, 0, previous_terminated])
 
     if len(Agent.memory) >= train_start:
         loss = Agent.train()

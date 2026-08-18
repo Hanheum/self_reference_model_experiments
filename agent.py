@@ -11,7 +11,7 @@ class agent:
 
         self.memory_vector = np.zeros([self.model.memory_size, ]).astype(np.float32)
         self.memory = deque(maxlen=10000)
-        #each memory will have player_location, target_location, memory, action, reward, previous_q_value, terminated
+        #each memory will have player_location, target_location, memory, action, reward, next_q_value, terminated
         self.epsilon = 1.
         self.epsilon_decay = 0.999
 
@@ -56,10 +56,10 @@ class agent:
     def train(self):
         x, y, actions, terminateds = [], [], [], []
         for memory_sample in self.memory:
-            player_location, target_location, memory, action, reward, previous_q_value, terminated = memory_sample
+            player_location, target_location, memory, action, reward, next_q_value, terminated = memory_sample
 
             x.append(np.concat([player_location/(self.world_size-1), target_location/(self.world_size-1), memory/10]))
-            y.append(reward + self.discount_rate * previous_q_value)
+            y.append(reward + self.discount_rate * next_q_value)
             actions.append(action)
             terminateds.append(terminated)
 
