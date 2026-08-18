@@ -9,7 +9,7 @@ Agent = agent(world_size=map_size)
 
 epochs = 10000
 
-train_start = 30000
+train_start = 3000
 
 for epoch in range(epochs):
     terminated = False
@@ -18,13 +18,15 @@ for epoch in range(epochs):
 
     total_reward = 0
 
+    previous_q_value = 0
     while not terminated:
         action = Agent.policy(np.concat([player_location, target_location]))
         new_player_location, new_target_location, reward, terminated = world.step(action)
 
         total_reward += reward
 
-        Agent.memory.append([player_location, target_location, Agent.memory_vector, action, reward, terminated])
+        Agent.memory.append([player_location, target_location, Agent.memory_vector, action, reward, previous_q_value, terminated])
+        previous_q_value = Agent.q_value
 
         Agent.update_memory()
         player_location = new_player_location

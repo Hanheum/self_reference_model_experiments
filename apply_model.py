@@ -7,7 +7,7 @@ Agent = agent()
 world = gridworld()
 
 Agent.model.load('./model_weight')
-Agent.epsilon = 0.3
+Agent.epsilon = 0.
 
 count_reached_targets = 0
 

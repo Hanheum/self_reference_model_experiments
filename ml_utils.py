@@ -32,3 +32,11 @@ def MSE(y_pred, y):
 def MSE_derivation(y_pred, y):
     n = len(y_pred)
     return (2/n)*(y_pred - y)
+
+def one_hot(arr, size):
+    N = len(arr)
+    one_hot_version = np.zeros([N, size]).astype(np.float32)
+    for i, number in enumerate(arr):
+        one_hot_version[i][number] = 1
+
+    return one_hot_version

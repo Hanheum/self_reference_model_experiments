@@ -47,16 +47,16 @@ class gridworld:
 
         if np.sum((self.player - self.target)**2) == 0:
             self.terminated = True
-            reward = 1/(self.count/200 + 1)
+            reward = 1
             self.reached_target = True
         else:
             new_distance = distance(self.player, self.target)
             if new_distance >= self.distance:
                 self.distance = new_distance
-                reward = -0.1-(self.count/100)
+                reward = -0.1
             else:
                 self.distance = new_distance
-                reward = 0.1/self.count
+                reward = 0.1
 
         self.count += 1
 
