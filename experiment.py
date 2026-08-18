@@ -9,7 +9,7 @@ Agent = agent(world_size=map_size)
 
 epochs = 10000
 
-train_start = 3000
+train_start = 300
 
 for epoch in range(epochs):
     terminated = False

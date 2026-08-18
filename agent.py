@@ -10,7 +10,7 @@ class agent:
         self.world_size = world_size
 
         self.memory_vector = np.zeros([self.model.memory_size, ]).astype(np.float32)
-        self.memory = deque(maxlen=10000)
+        self.memory = deque(maxlen=1000)
         #each memory will have player_location, target_location, memory, action, reward, next_q_value, terminated
         self.epsilon = 1.
         self.epsilon_decay = 0.999
