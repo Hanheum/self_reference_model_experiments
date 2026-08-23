@@ -36,14 +36,14 @@ class gridworld:
 
     def step(self, action):
         #0~3, 0:up 1:down 2:right 3:left
-        before_moving = self.player.copy()
+        #before_moving = self.player.copy()
         self.player += self.moving_dictionary[action]
         self.player[0] = min([self.size-1, max([0, self.player[0]])])
         self.player[1] = min([self.size-1, max([0, self.player[1]])])
-        if distance(before_moving, self.player) == 0:
+        '''if distance(before_moving, self.player) == 0:
             self.player -= self.moving_dictionary[action]
             self.player[0] = min([self.size-1, max([0, self.player[0]])])
-            self.player[1] = min([self.size-1, max([0, self.player[1]])])
+            self.player[1] = min([self.size-1, max([0, self.player[1]])])'''
 
         if np.sum((self.player - self.target)**2) == 0:
             self.terminated = True

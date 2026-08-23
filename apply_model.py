@@ -3,29 +3,28 @@ from environment import gridworld
 from agent import agent
 from time import sleep
 
-Agent = agent(world_size=9)
-world = gridworld(9)
+Agent = agent(world_size=5)
+world = gridworld(5)
 
 Agent.model.load('./model_weight')
 Agent.epsilon = 0.
 
-count_reached_targets = 0
+terminated = False
+player_location, target_location = world.reset()
+total_reward = 0
 
-for i in range(10):
-    terminated = False
-    player_location, target_location = world.reset()
-    total_reward = 0
+world.show()
 
-    while not terminated:
-        action = Agent.policy(np.concat([player_location, target_location]))
-        player_location, target_location, reward, terminated = world.step(action)
-        Agent.update_memory()
-        total_reward += reward
+player_location_input = input('start where:').split(', ')
+player_location_input = list(map(int, player_location_input))
+player_location = np.array(player_location_input)
+world.player = player_location
 
-        world.show()
-        #sleep(0.1)
+while not terminated:
+    action = Agent.policy(np.concat([player_location, target_location]), eval=True)
+    player_location, target_location, reward, terminated = world.step(action)
+    Agent.update_memory()
+    total_reward += reward
 
-    if world.reached_target:
-        count_reached_targets += 1
-
-print(count_reached_targets)
+    world.show()
+    sleep(0.1)

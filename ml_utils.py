@@ -1,7 +1,10 @@
 import numpy as np
 
+def He_init(fan_in):
+    return (2/fan_in)**0.5
+
 def generate_random_matrix(shape):
-    return np.random.randn(*shape).astype(np.float32)/10
+    return np.random.randn(*shape).astype(np.float32) * He_init(shape[-1])
 
 def sigmoid(x):
     return 1/(1+np.exp(-x))
