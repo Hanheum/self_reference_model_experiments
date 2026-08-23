@@ -1,7 +1,7 @@
 import numpy as np
 
 def generate_random_matrix(shape):
-    return np.random.randn(*shape).astype(np.float32)
+    return np.random.randn(*shape).astype(np.float32)/10
 
 def sigmoid(x):
     return 1/(1+np.exp(-x))
@@ -40,3 +40,12 @@ def one_hot(arr, size):
         one_hot_version[i][number] = 1
 
     return one_hot_version
+
+def ReLU(x):
+    mask = x>=0
+    mask = mask.astype(np.float32)
+    return x * mask
+
+def ReLU_prime(x):
+    ones = x>=0
+    return ones.astype(np.float32)

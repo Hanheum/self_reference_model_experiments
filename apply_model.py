@@ -3,8 +3,8 @@ from environment import gridworld
 from agent import agent
 from time import sleep
 
-Agent = agent()
-world = gridworld()
+Agent = agent(world_size=9)
+world = gridworld(9)
 
 Agent.model.load('./model_weight')
 Agent.epsilon = 0.

@@ -8,13 +8,13 @@ class memory_model:
         self.output_size = output_size
         self.memory_size = memory_size
 
-        self.W0 = generate_random_matrix((32, self.input_size+self.memory_size))
-        self.b0 = generate_random_matrix((32, 1))
-        self.W1 = generate_random_matrix((32, 32))
-        self.b1 = generate_random_matrix((32, 1))
-        self.W2 = generate_random_matrix((32, 32))
-        self.b2 = generate_random_matrix((32, 1))
-        self.W3 = generate_random_matrix((self.memory_size, 32))
+        self.W0 = generate_random_matrix((16, self.input_size+self.memory_size))
+        self.b0 = generate_random_matrix((16, 1))
+        self.W1 = generate_random_matrix((16, 16))
+        self.b1 = generate_random_matrix((16, 1))
+        self.W2 = generate_random_matrix((16, 16))
+        self.b2 = generate_random_matrix((16, 1))
+        self.W3 = generate_random_matrix((self.memory_size, 16))
         self.b3 = generate_random_matrix((self.memory_size, 1))
         self.W4 = generate_random_matrix((self.output_size, self.memory_size))
         self.b4 = generate_random_matrix((self.output_size, 1))
@@ -28,11 +28,11 @@ class memory_model:
         #x be like: [sample]
         self.x0 = to_column(x)
         self.g0 = np.matmul(self.W0, self.x0) + self.b0
-        self.x1 = sigmoid(self.g0)
+        self.x1 = ReLU(self.g0)
         self.g1 = np.matmul(self.W1, self.x1) + self.b1
-        self.x2 = sigmoid(self.g1)
+        self.x2 = ReLU(self.g1)
         self.g2 = np.matmul(self.W2, self.x2) + self.b2
-        self.x3 = sigmoid(self.g2)
+        self.x3 = ReLU(self.g2)
         self.g3 = np.matmul(self.W3, self.x3) + self.b3
         self.x4 = sigmoid(self.g3)
         self.g4 = np.matmul(self.W4, self.x4) + self.b4
@@ -42,11 +42,11 @@ class memory_model:
         #x be like: [[sample1], [sample2], ...]
         self.x0 = x.T
         self.g0 = np.matmul(self.W0, self.x0) + self.b0
-        self.x1 = sigmoid(self.g0)
+        self.x1 = ReLU(self.g0)
         self.g1 = np.matmul(self.W1, self.x1) + self.b1
-        self.x2 = sigmoid(self.g1)
+        self.x2 = ReLU(self.g1)
         self.g2 = np.matmul(self.W2, self.x2) + self.b2
-        self.x3 = sigmoid(self.g2)
+        self.x3 = ReLU(self.g2)
         self.g3 = np.matmul(self.W3, self.x3) + self.b3
         self.x4 = sigmoid(self.g3)
         self.g4 = np.matmul(self.W4, self.x4) + self.b4
@@ -63,12 +63,12 @@ class memory_model:
         self.g4 = self.g4.T
         return self.g4
 
-    def backward(self, x, y, rewards, actions):
+    def backward(self, x, y, rewards, actions, terminateds):
         #x, y be like: [[sample1], [sample2], ...]
         N = len(x)
 
         y = np.amax(self.forward_train(y), axis=1)
-        y = rewards + self.discount_rate * y
+        y = rewards + self.discount_rate * y * (1 - terminateds)
 
         actions_one_hot = one_hot(actions, self.output_size)
         y_pred = np.sum(self.forward_train(x) * actions_one_hot, axis=1)
@@ -84,15 +84,15 @@ class memory_model:
         dLdW3 = np.matmul(dLdb3, np.reshape(self.x3, [N, 1, self.x3.shape[1]]))
         dLdx3 = np.matmul(self.W3.T, dLdb3)
 
-        dLdb2 = dLdx3 * sigmoid_prime(to_column(self.g2))
+        dLdb2 = dLdx3 * ReLU_prime(to_column(self.g2))
         dLdW2 = np.matmul(dLdb2, np.reshape(self.x2, [N, 1, self.x2.shape[1]]))
         dLdx2 = np.matmul(self.W2.T, dLdb2)
 
-        dLdb1 = dLdx2 * sigmoid_prime(to_column(self.g1))
+        dLdb1 = dLdx2 * ReLU_prime(to_column(self.g1))
         dLdW1 = np.matmul(dLdb1, np.reshape(self.x1, [N, 1, self.x1.shape[1]]))
         dLdx1 = np.matmul(self.W1.T, dLdb1)
 
-        dLdb0 = dLdx1 * sigmoid_prime(to_column(self.g0))
+        dLdb0 = dLdx1 * ReLU_prime(to_column(self.g0))
         dLdW0 = np.matmul(dLdb0, np.reshape(self.x0, [N, 1, self.x0.shape[1]]))
 
         self.b0 -= self.learning_rate * np.sum(dLdb0, axis=0)

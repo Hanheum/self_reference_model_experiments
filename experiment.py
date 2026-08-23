@@ -2,14 +2,14 @@ import numpy as np
 from agent import agent
 from environment import gridworld
 
-map_size = 5
+map_size = 9
 
 world = gridworld(size=map_size)
 Agent = agent(world_size=map_size)
 
 epochs = 10000
 
-train_start = 300
+train_start = 3000
 
 for epoch in range(epochs):
     terminated = False
