@@ -15,10 +15,12 @@ total_reward = 0
 
 world.show()
 
-player_location_input = input('start where:').split(', ')
-player_location_input = list(map(int, player_location_input))
-player_location = np.array(player_location_input)
-world.player = player_location
+raw_input = input('start where:')
+if raw_input != '':
+    player_location_input = raw_input.split(', ')
+    player_location_input = list(map(int, player_location_input))
+    player_location = np.array(player_location_input)
+    world.player = player_location
 
 while not terminated:
     action = Agent.policy(np.concat([player_location, target_location]), eval=True)
@@ -27,4 +29,4 @@ while not terminated:
     total_reward += reward
 
     world.show()
-    sleep(0.1)
+    sleep(0.2)
