@@ -1,5 +1,6 @@
 import numpy as np
 from ml_utils import distance
+import pygame
 
 class gridworld:
     def __init__(self, size=5):
@@ -19,12 +20,14 @@ class gridworld:
         self.count = 1
         self.reached_target = False
 
+        self.window = None
+        self.window_size = 100 * self.size
+
     def reset(self):
         self.player = np.random.randint(0, self.size, size=[2, ])
         self.target = np.random.randint(0, self.size, size=[2, ])
         
         while np.sum((self.player - self.target)**2) == 0:
-            print(self.target)
             self.target = np.random.randint(0, self.size, size=[2, ])
 
         self.terminated = False
@@ -40,10 +43,6 @@ class gridworld:
         self.player += self.moving_dictionary[action]
         self.player[0] = min([self.size-1, max([0, self.player[0]])])
         self.player[1] = min([self.size-1, max([0, self.player[1]])])
-        '''if distance(before_moving, self.player) == 0:
-            self.player -= self.moving_dictionary[action]
-            self.player[0] = min([self.size-1, max([0, self.player[0]])])
-            self.player[1] = min([self.size-1, max([0, self.player[1]])])'''
 
         if np.sum((self.player - self.target)**2) == 0:
             self.terminated = True
@@ -65,16 +64,35 @@ class gridworld:
 
         return self.player, self.target, reward, self.terminated
 
+    def make_coord_for_show(self, original_coord):
+        return ((original_coord.astype(np.float32)+0.5)*100).astype(int)
+
+    def init_show(self):
+        pygame.init()
+
+        self.window = pygame.display.set_mode((self.window_size, self.window_size))
+        pygame.display.set_caption('Gridworld')
+        self.window.fill((255, 255, 255))
+        pygame.display.flip()
+
+        for i in range(self.size+1):
+            pygame.draw.line(self.window, (0, 0, 0), [i*100, 0], [i*100, self.window_size], 5)
+            pygame.draw.line(self.window, (0, 0, 0), [0, i*100], [self.window_size, i*100], 5)
+
+        pygame.draw.circle(self.window, (255, 0, 0), self.make_coord_for_show(self.player), 50)
+        pygame.draw.circle(self.window, (0, 0, 255), self.make_coord_for_show(self.target), 50)
+
+        pygame.display.update()
+
     def show(self):
-        board = np.zeros([self.size, self.size])
-        board[int(self.player[0])][int(self.player[1])] = 1
-        board[int(self.target[0])][int(self.target[1])] = 2
+        self.window.fill((255, 255, 255))
+        pygame.display.flip()
 
-        board_txt = ''
-        for i in range(self.size):
-            for j in range(self.size):
-                board_txt += f"{int(board[i][j])}"
-            board_txt += '\n'
-
-        print('='*10)
-        print(board_txt)
+        for i in range(self.size+1):
+            pygame.draw.line(self.window, (0, 0, 0), [i*100, 0], [i*100, self.window_size], 5)
+            pygame.draw.line(self.window, (0, 0, 0), [0, i*100], [self.window_size, i*100], 5)
+        
+        pygame.draw.circle(self.window, (255, 0, 0), self.make_coord_for_show(self.player), 50)
+        pygame.draw.circle(self.window, (0, 0, 255), self.make_coord_for_show(self.target), 50)
+        
+        pygame.display.update()
