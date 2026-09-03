@@ -44,6 +44,11 @@ def one_hot(arr, size):
 
     return one_hot_version
 
+def single_one_hot(idx, size):
+    one_hot_version = np.zeros((size, )).astype(np.float32)
+    one_hot_version[idx] = 1
+    return one_hot_version
+
 def ReLU(x):
     mask = x>=0
     mask = mask.astype(np.float32)

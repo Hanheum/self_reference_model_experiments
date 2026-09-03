@@ -47,8 +47,8 @@ class memory_using_task:
 
         player_number, target_number = picked_positions
 
-        self.player = np.array([player_number%self.size-1, player_number//self.size])
-        self.target = np.array([target_number%self.size-1, target_number//self.size])
+        self.player = np.array([player_number//self.size, player_number%self.size-1])
+        self.target = np.array([target_number//self.size, target_number%self.size-1])
 
         self.terminated = False
         self.count = 1
