@@ -7,13 +7,13 @@ class memory_model:
         self.output_size = output_size
         self.memory_size = memory_size
 
-        self.W0 = generate_random_matrix((16, self.input_size+self.memory_size))
-        self.b0 = generate_random_matrix((16, 1))
-        self.W1 = generate_random_matrix((16, 16))
-        self.b1 = generate_random_matrix((16, 1))
-        self.W2 = generate_random_matrix((16, 16))
-        self.b2 = generate_random_matrix((16, 1))
-        self.W3 = generate_random_matrix((self.memory_size, 16))
+        self.W0 = generate_random_matrix((64, self.input_size+self.memory_size))
+        self.b0 = generate_random_matrix((64, 1))
+        self.W1 = generate_random_matrix((64, 64))
+        self.b1 = generate_random_matrix((64, 1))
+        self.W2 = generate_random_matrix((64, 64))
+        self.b2 = generate_random_matrix((64, 1))
+        self.W3 = generate_random_matrix((self.memory_size, 64))
         self.b3 = generate_random_matrix((self.memory_size, 1))
         self.W4 = generate_random_matrix((self.output_size, self.memory_size))
         self.b4 = generate_random_matrix((self.output_size, 1))

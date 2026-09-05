@@ -1,7 +1,7 @@
 import numpy as np
 from memory_model import memory_model
 from collections import deque
-from ml_utils import to_single_vector, single_one_hot
+from ml_utils import to_single_vector
 from random import random, randint
 
 class agent:
@@ -17,7 +17,7 @@ class agent:
         self.memory = deque(maxlen=100000)
         #each memory will have player_location, target_location, target_type, next_player_location, next_target_location, next_target_type, memory, next_memory, action, reward, terminated
         self.epsilon = 1.
-        self.epsilon_decay = 0.99999
+        self.epsilon_decay = 0.999999
 
         self.q_value = 0
 
@@ -27,7 +27,7 @@ class agent:
     def policy(self, observation, eval=False):
         self.epsilon *= self.epsilon_decay
         self.epsilon = max([0.1*float(not eval), self.epsilon])
-        prediction = self.model.forward(np.concat([observation/(self.world_size-1), self.memory_vector]))
+        prediction = self.model.forward(np.concat([observation/(self.world_size-1), self.memory_vector/10]))
         action = np.argmax(prediction)
         self.q_value = np.amax(prediction)
 
@@ -55,8 +55,8 @@ class agent:
         for memory_sample in batch:
             player_location, target_location, target_type, next_player_location, next_target_location, next_target_type, memory, next_memory, action, reward, terminated = memory_sample
 
-            x.append(np.concat([player_location/(self.world_size-1), target_location/(self.world_size-1), single_one_hot(target_type, 4), memory]))
-            y.append(np.concat([next_player_location/(self.world_size-1), next_target_location/(self.world_size-1), single_one_hot(next_target_type, 4), next_memory]))
+            x.append(np.concat([player_location/(self.world_size-1), target_location/(self.world_size-1), target_type, memory/10]))
+            y.append(np.concat([next_player_location/(self.world_size-1), next_target_location/(self.world_size-1), next_target_type, next_memory/10]))
             actions.append(action)
             rewards.append(reward)
             terminateds.append(terminated)

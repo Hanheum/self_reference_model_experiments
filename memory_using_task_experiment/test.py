@@ -5,7 +5,7 @@ from time import sleep
 world = memory_using_task()
 terminated = False
 
-player_location, target_location = world.reset()
+player_location, target_location, target_type = world.reset()
 print(player_location, target_location)
 print(world.spots)
 

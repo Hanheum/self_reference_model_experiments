@@ -59,7 +59,7 @@ class memory_using_task:
         self.target_type = randint(1, 3)
         self.right_spot = self.spots[self.target_type-1]
 
-        return self.player, self.target
+        return self.player, self.target, self.target_type
 
     def step(self, action):
         #0~3, 0:up 1:down 2:right 3:left
@@ -86,7 +86,7 @@ class memory_using_task:
                     reward = -0.2
 
                 if new_distance == 0:
-                    reward = 2
+                    reward = 3
                     self.terminated = True
                     self.is_right_spot = True
 
@@ -95,7 +95,7 @@ class memory_using_task:
                         continue
 
                     if distance(self.player, self.spots[i]) == 0:
-                        reward = -2
+                        reward = -10
                         self.terminated = True
 
                 self.distance = new_distance
@@ -108,6 +108,7 @@ class memory_using_task:
                 reward = -0.2
 
             returning_taget_type = self.target_type
+            self.distance = new_distance
 
         self.count += 1
         if self.count >= 200:
